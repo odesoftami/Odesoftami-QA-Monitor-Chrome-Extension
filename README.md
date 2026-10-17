@@ -1,3 +1,10 @@
+
+<p align="center">
+  <img src="assets/odesoftami-qa-monitor-banner.png"
+       alt="Odesoftami QA Monitor — Browser QA and Monitoring Tool"
+       width="100%">
+</p>
+
 # Odesoftami QA Monitor
 
 **Version 3.2.0 — Browser QA & Monitoring Tool**
