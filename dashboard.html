@@ -1,0 +1,275 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Odesoftami QA Monitor — Dashboard</title>
+  <link rel="stylesheet" href="dashboard.css">
+</head>
+<body>
+  <header class="dash-header">
+    <div class="brand-block">
+      <div class="logo" aria-hidden="true">↻</div>
+      <div>
+        <h1>Odesoftami QA Monitor</h1>
+        <p>Browser QA &amp; Monitoring Tool · Dashboard · <span id="dashboardVersion">v—</span> · by Denys Oleksiienko</p>
+      </div>
+    </div>
+    <nav class="header-nav" aria-label="Extension pages">
+      <a href="options.html">Settings</a>
+      <a href="privacy.html">Privacy</a>
+      <span id="engineState" class="engine-state">Idle</span>
+    </nav>
+  </header>
+
+  <nav class="dash-tabs" aria-label="Dashboard sections">
+    <button type="button" class="dash-tab active" data-view="overview" aria-pressed="true">Overview</button>
+    <button type="button" class="dash-tab" data-view="history" aria-pressed="false">History &amp; reports</button>
+    <button type="button" class="dash-tab" data-view="presets" aria-pressed="false">Presets</button>
+  </nav>
+
+  <div id="storageWarning" class="warning hidden" role="alert"></div>
+
+  <main>
+    <section id="overviewView" class="view">
+      <div class="overview-top">
+        <section class="panel live-panel">
+          <div class="panel-heading">
+            <h2>Current session</h2>
+            <select id="sessionSelect" aria-label="Select session"></select>
+          </div>
+          <div id="liveStatusRow" class="live-status-row">
+            <span id="liveDot" class="live-dot"></span>
+            <strong id="liveStatus">No session selected</strong>
+            <span id="liveMode" class="chip hidden">—</span>
+            <span id="liveCountdown" class="live-countdown"></span>
+          </div>
+          <div id="liveUrl" class="live-url">Start a Refresh, Monitor or QA Session from the extension popup.</div>
+          <div class="live-grid">
+            <div><span>Current check</span><strong id="liveCurrent">—</strong></div>
+            <div><span>Last result</span><strong id="liveLastResult">—</strong></div>
+            <div><span>Failures</span><strong id="liveFailures">0</strong></div>
+            <div><span>Tab</span><strong id="liveTab">—</strong></div>
+          </div>
+          <div class="panel-actions">
+            <button id="stopSessionButton" class="danger" type="button" disabled>Stop session</button>
+            <button id="refreshButton" class="secondary" type="button">Refresh data</button>
+          </div>
+        </section>
+
+        <section class="panel stats-panel">
+          <div class="panel-heading">
+            <h2>Live summary</h2>
+            <div class="stats-heading-actions">
+              <button id="exportCsv" class="secondary small-button" type="button">Export CSV</button>
+              <button id="clearHistoryQuick" class="link-danger" type="button">Clear history</button>
+            </div>
+          </div>
+          <div class="stats-grid">
+            <div class="stat-card"><span>Checks</span><strong id="dashTotal">0</strong></div>
+            <div class="stat-card pass"><span>Passed</span><strong id="dashPass">0</strong></div>
+            <div class="stat-card fail"><span>Failed</span><strong id="dashFail">0</strong></div>
+            <div class="stat-card warn"><span>Warnings</span><strong id="dashWarn">0</strong></div>
+            <div class="stat-card unknown"><span>Unknown</span><strong id="dashUnknown">0</strong></div>
+            <div class="stat-card"><span>Avg load</span><strong id="dashAvgLoad">—</strong></div>
+            <div class="stat-card"><span>Pass rate</span><strong id="dashPassRate">—</strong></div>
+            <div class="stat-card"><span>Duration</span><strong id="dashDuration">—</strong></div>
+          </div>
+          <div id="sessionMeta" class="session-meta">No session data yet.</div>
+        </section>
+      </div>
+
+      <div class="two-col">
+        <section class="panel">
+          <div class="panel-heading">
+            <h2>Recent events</h2>
+            <a href="#history" class="text-link" id="openHistoryLink">Full history →</a>
+          </div>
+          <div class="table-wrap">
+            <table class="events-table">
+              <thead><tr><th>Time</th><th>Result</th><th>Check</th><th>Description</th><th>HTTP</th><th>Load</th></tr></thead>
+              <tbody id="recentEvents"></tbody>
+            </table>
+          </div>
+          <div id="overviewEmpty" class="empty-state">No events recorded yet. Start a session to collect QA data.</div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-heading"><h2>Monitoring configuration</h2></div>
+          <table class="config-table"><tbody id="configTable"></tbody></table>
+          <div class="panel-actions wrap-actions">
+            <button id="exportHtml" class="secondary" type="button">Export HTML</button>
+            <button id="exportJson" class="secondary" type="button">Export JSON</button>
+          </div>
+          <p class="muted small">Reports are generated from recorded session data only. Missing measurements are labelled UNKNOWN or unavailable.</p>
+        </section>
+      </div>
+    </section>
+
+    <section id="historyView" class="view hidden">
+      <div class="history-layout">
+        <aside class="panel session-list-panel">
+          <div class="panel-heading">
+            <h2>Sessions</h2>
+            <button id="clearHistoryButton" class="link-danger" type="button">Clear completed</button>
+          </div>
+          <div id="historySessionList" class="session-list"></div>
+        </aside>
+
+        <div class="history-main">
+          <section class="panel">
+            <div class="panel-heading">
+              <h2 id="historyTitle">Event timeline</h2>
+              <span id="historyCount" class="muted small"></span>
+            </div>
+            <div class="filter-row">
+              <select id="filterResult" aria-label="Filter by result">
+                <option value="">All results</option>
+                <option value="PASS">PASS</option>
+                <option value="FAIL">FAIL</option>
+                <option value="WARN">WARN</option>
+                <option value="UNKNOWN">UNKNOWN</option>
+                <option value="INFO">INFO</option>
+              </select>
+              <select id="filterType" aria-label="Filter by event type">
+                <option value="">All event types</option>
+                <option value="text_check">Text check</option>
+                <option value="dom_check">DOM check</option>
+                <option value="url_check">URL check</option>
+                <option value="navigation">Navigation / HTTP</option>
+                <option value="page_load">Page load</option>
+                <option value="redirect">Redirect</option>
+                <option value="navigation_error">Navigation error</option>
+                <option value="reload_requested">Reload</option>
+                <option value="session_start">Session</option>
+                <option value="legacy_event">Legacy v2.3</option>
+              </select>
+              <input id="filterText" type="search" placeholder="Search description, URL, reason…" aria-label="Search events">
+              <button id="clearFilters" class="secondary" type="button">Reset</button>
+            </div>
+            <div class="table-wrap">
+              <table class="events-table wide">
+                <thead><tr><th>Time</th><th>Result</th><th>Check</th><th>Description</th><th>Expected</th><th>Actual</th><th>HTTP</th><th>Load</th><th>Reason</th><th>Details</th></tr></thead>
+                <tbody id="historyEvents"></tbody>
+              </table>
+            </div>
+            <div id="historyEmpty" class="empty-state">No events match this session or filter.</div>
+            <div class="panel-actions wrap-actions history-actions">
+              <button id="historyExportCsv" class="secondary" type="button">Export CSV</button>
+              <button id="historyExportHtml" class="secondary" type="button">Export HTML report</button>
+              <button id="historyExportJson" class="secondary" type="button">Export JSON</button>
+              <button id="deleteSessionButton" class="danger" type="button">Delete session</button>
+            </div>
+          </section>
+
+          <section class="panel">
+            <div class="panel-heading">
+              <h2>Screenshots</h2>
+              <button id="clearScreenshotsButton" class="link-danger" type="button">Clear session screenshots</button>
+            </div>
+            <div id="screenshotNote" class="muted small">Screenshots are opt-in, stored locally in IndexedDB and never uploaded. Only the visible viewport of the active, focused tab can be captured.</div>
+            <div id="screenshotGrid" class="screenshot-grid"></div>
+          </section>
+        </div>
+      </div>
+    </section>
+
+    <section id="presetsView" class="view hidden">
+      <div class="presets-layout">
+        <section class="panel">
+          <div class="panel-heading">
+            <h2>Saved presets</h2>
+            <span class="muted small">Built-ins are read-only templates.</span>
+          </div>
+          <div id="presetList" class="preset-list"></div>
+          <div class="panel-actions wrap-actions">
+            <button id="exportPresetsButton" class="secondary" type="button">Export all custom presets</button>
+            <label class="file-button" for="importPresetsInput">Import preset JSON</label>
+            <input id="importPresetsInput" class="hidden" type="file" accept="application/json,.json">
+          </div>
+          <div id="presetStatus" class="save-status" role="status" aria-live="polite"></div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-heading">
+            <h2 id="presetFormTitle">Create a preset</h2>
+            <span id="presetModeHint" class="muted small"></span>
+          </div>
+          <form id="presetForm" autocomplete="off">
+            <div class="form-grid">
+              <label>Name<input id="presetName" type="text" maxlength="60" required></label>
+              <label>Mode
+                <select id="presetMode">
+                  <option value="refresh">Refresh</option>
+                  <option value="monitor">Monitor</option>
+                  <option value="qa">QA Session</option>
+                </select>
+              </label>
+              <label class="full">Description<input id="presetDescription" type="text" maxlength="200" placeholder="What is this preset for?"></label>
+              <label>Refresh interval (s)<input id="presetInterval" type="number" min="2" max="86400" step="1" value="10"></label>
+              <label>Schedule
+                <select id="presetCycleMode">
+                  <option value="continuous">Continuous</option>
+                  <option value="cycles">Cycles</option>
+                </select>
+              </label>
+              <label>Reloads per cycle<input id="presetReloads" type="number" min="1" max="1000" step="1" value="5"></label>
+              <label>Pause (s)<input id="presetPause" type="number" min="1" max="86400" step="1" value="10"></label>
+              <label class="check-label"><input id="presetAutoRefresh" type="checkbox" checked> Auto refresh during QA session</label>
+              <label class="check-label"><input id="presetTextEnabled" type="checkbox"> Text check</label>
+              <label>Text condition
+                <select id="presetTextCondition">
+                  <option value="appears">Text appears</option>
+                  <option value="absent">Text is absent</option>
+                  <option value="disappears">Text disappears</option>
+                  <option value="changes">Text changes</option>
+                </select>
+              </label>
+              <label class="full">Text / regex<input id="presetTextPattern" type="text" maxlength="300" placeholder="e.g. READY"></label>
+              <label class="check-label"><input id="presetTextRegex" type="checkbox"> Treat text as regular expression</label>
+              <label class="check-label"><input id="presetDomEnabled" type="checkbox"> DOM watcher</label>
+              <label>DOM condition
+                <select id="presetDomCondition">
+                  <option value="appears">Element appears</option>
+                  <option value="disappears">Element disappears</option>
+                  <option value="textChanges">Element text changes</option>
+                </select>
+              </label>
+              <label class="full">CSS selector<input id="presetDomSelector" type="text" maxlength="300" placeholder="e.g. .status-message"></label>
+              <label class="full">Expected element text (optional)<input id="presetDomExpected" type="text" maxlength="500"></label>
+              <label class="check-label"><input id="presetUrlEnabled" type="checkbox" checked> URL check</label>
+              <label class="full">Expected URL (optional)<input id="presetExpectedUrl" type="url" maxlength="2048" placeholder="Defaults to the URL at session start"></label>
+              <label class="check-label"><input id="presetIgnoreHash" type="checkbox" checked> Ignore URL hash</label>
+              <label class="check-label"><input id="presetHttp" type="checkbox" checked> HTTP / navigation monitoring</label>
+              <label class="check-label"><input id="presetTiming" type="checkbox" checked> Load timing</label>
+              <label>Load budget (ms)<input id="presetBudget" type="number" min="0" max="60000" step="100" value="5000"></label>
+              <label>Stabilization (ms)<input id="presetSettle" type="number" min="100" max="5000" step="100" value="800"></label>
+              <label class="check-label"><input id="presetNotifyMatch" type="checkbox" checked> Notify when condition matches</label>
+              <label class="check-label"><input id="presetNotifyFailure" type="checkbox" checked> Notify on failures</label>
+              <label class="check-label"><input id="presetStopMatch" type="checkbox"> Stop when condition matches</label>
+              <label class="check-label"><input id="presetStopFailure" type="checkbox"> Stop on first failure</label>
+              <label class="check-label"><input id="presetScreenshot" type="checkbox"> Screenshot on failure</label>
+            </div>
+            <div id="presetFormError" class="error-box hidden" role="alert"></div>
+            <div class="panel-actions">
+              <button id="presetSaveButton" class="primary" type="submit">Save preset</button>
+              <button id="presetCancelButton" class="secondary" type="button">New / cancel</button>
+            </div>
+          </form>
+        </section>
+      </div>
+    </section>
+  </main>
+
+  <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
+
+  <footer class="dash-footer">
+    <span>Odesoftami QA Monitor <span id="dashboardFooterVersion">v—</span> — Browser QA &amp; Monitoring Tool. Local-first. No telemetry, no uploads.</span>
+    <span><a href="https://odesoftami.com/apk/" target="_blank" rel="noreferrer">Odesoftami Apps ↗</a></span>
+  </footer>
+
+  <script src="lib/core.js"></script>
+  <script src="lib/screenshots.js"></script>
+  <script src="dashboard.js"></script>
+</body>
+</html>

@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Odesoftami QA Monitor — Settings</title>
+  <link rel="stylesheet" href="options.css">
+</head>
+<body>
+  <main class="wrap">
+    <header>
+      <div class="logo" aria-hidden="true">↻</div>
+      <div>
+        <h1>Odesoftami QA Monitor</h1>
+        <p>Browser QA &amp; Monitoring Tool · <span id="optionsVersion">v—</span> · by Denys Oleksiienko</p>
+      </div>
+    </header>
+
+    <nav class="top-nav" aria-label="Extension pages">
+      <a id="dashboardLink" href="dashboard.html">QA dashboard</a>
+      <a id="privacyLink" href="privacy.html">Privacy</a>
+    </nav>
+
+    <section class="panel">
+      <h2>Refresh behavior</h2>
+      <label class="setting">
+        <span><strong>Bypass local cache</strong><small>Request a cache-bypassing reload when refreshing a page. This is applied to new Refresh and QA Session sessions.</small></span>
+        <input id="bypassCache" type="checkbox">
+      </label>
+      <label class="setting">
+        <span><strong>Show countdown badge</strong><small>Display the live countdown on the extension icon during refresh sessions (red while active, green during cycle pauses).</small></span>
+        <input id="showCountdown" type="checkbox">
+      </label>
+      <label class="setting">
+        <span><strong>Default mode</strong><small>Mode selected when the popup opens and no session is active.</small></span>
+        <select id="defaultMode">
+          <option value="refresh">Refresh</option>
+          <option value="monitor">Monitor</option>
+          <option value="qa">QA Session</option>
+        </select>
+      </label>
+    </section>
+
+    <section class="panel">
+      <h2>Monitoring defaults</h2>
+      <label class="setting">
+        <span><strong>Stabilize DOM changes for</strong><small>Wait this long after the last DOM mutation before evaluating checks. Lower values are faster but noisier; 800 ms is a good default.</small></span>
+        <div class="setting-control">
+          <input id="settleMs" type="number" min="100" max="5000" step="100" value="800">
+          <span class="unit">ms</span>
+        </div>
+      </label>
+      <label class="setting">
+        <span><strong>Events kept per session</strong><small>Older events are dropped when the limit is reached. Session metadata and statistics remain.</small></span>
+        <select id="historyLimit">
+          <option value="200">200 events</option>
+          <option value="500" selected>500 events</option>
+          <option value="1000">1,000 events</option>
+          <option value="2000">2,000 events</option>
+        </select>
+      </label>
+      <label class="setting">
+        <span><strong>Notify on failures by default</strong><small>New sessions start with failure notifications enabled. Each session can override this.</small></span>
+        <input id="notifyOnFailure" type="checkbox" checked>
+      </label>
+      <label class="setting">
+        <span><strong>Screenshot on failure by default</strong><small>Opt-in. Captures only the visible viewport of the active, focused tab, stores it locally in IndexedDB and never uploads it. Chrome may refuse capture for background or restricted tabs.</small></span>
+        <input id="screenshotOnFailure" type="checkbox">
+      </label>
+      <button id="save" class="primary" type="button">Save settings</button>
+      <div id="status" class="save-status" role="status" aria-live="polite"></div>
+    </section>
+
+    <section class="panel">
+      <h2>Floating QA panel</h2>
+      <p class="note-text">A compact panel can stay over the monitored page in Monitor and QA Session modes. It reads the same session data as the dashboard and never creates a second monitoring engine.</p>
+      <label class="setting">
+        <span><strong>Enable floating QA panel</strong><small>Show the panel automatically when a Monitor or QA Session starts. Refresh mode never shows it. Monitoring continues even if the panel is disabled or cannot be displayed.</small></span>
+        <input id="floatingPanelEnabled" type="checkbox" checked>
+      </label>
+      <label class="setting">
+        <span><strong>Default position</strong><small>Used until you drag the panel. The dragged position is remembered per site.</small></span>
+        <select id="floatingPanelDefaultPosition">
+          <option value="bottom-right">Bottom right</option>
+          <option value="bottom-left">Bottom left</option>
+          <option value="top-right">Top right</option>
+          <option value="top-left">Top left</option>
+        </select>
+      </label>
+      <label class="setting">
+        <span><strong>Start collapsed</strong><small>Show a small QA indicator with the FAIL count instead of the full panel. Click it to expand.</small></span>
+        <input id="floatingPanelDefaultCollapsed" type="checkbox">
+      </label>
+      <label class="setting">
+        <span><strong>Retain the final session summary</strong><small>After a session stops, keep the panel visible with final counters until you dismiss it or start a new session.</small></span>
+        <input id="floatingPanelRetainSummary" type="checkbox" checked>
+      </label>
+      <p class="note-text">The panel uses a Shadow DOM and the existing service worker/session data. Hiding or collapsing it never stops monitoring; only the explicit Stop action does.</p>
+    </section>
+
+    <section class="panel">
+      <h2>Local data</h2>
+      <p class="note-text">Sessions, events, presets and screenshots stay in this browser profile. Nothing is sent to Odesoftami or any third party. Clearing completed session history does not delete stored screenshots.</p>
+      <div id="storageUsage" class="usage">Storage usage is being calculated…</div>
+      <div class="button-row">
+        <button id="clearHistory" class="secondary" type="button">Clear completed session history</button>
+        <button id="clearScreenshots" class="secondary" type="button">Clear stored screenshots</button>
+      </div>
+      <div id="dataStatus" class="save-status" role="status" aria-live="polite"></div>
+    </section>
+
+    <section class="panel note">
+      <h2>Permissions and privacy</h2>
+      <ul class="permission-list">
+        <li><strong>storage</strong> — local settings, sessions, events and presets.</li>
+        <li><strong>activeTab</strong> — identifies the tab you explicitly monitor and supports opt-in screenshots of the active tab.</li>
+        <li><strong>scripting</strong> — injects the monitoring script into an already-open tab when a session starts.</li>
+        <li><strong>notifications</strong> — shows local alerts for configured conditions and failures.</li>
+        <li><strong>alarms</strong> — wakes the service worker and provides a fallback when background tab timers are throttled.</li>
+        <li><strong>webRequest</strong> — observe-only access to main-frame HTTP/HTTPS navigations while a session is running. Used solely to read the final status code, redirect target and network error; it never blocks or modifies requests. <code>webRequestBlocking</code> is not used.</li>
+        <li><strong>HTTP/HTTPS host access</strong> — required to inject the monitor on the pages you choose and to read navigation results for them. It is not used to send data anywhere.</li>
+      </ul>
+      <p>Cross-origin iframe content and closed shadow DOM cannot be inspected. HTTP status and timing may be unavailable for pages loaded before a session starts; those results are recorded as UNKNOWN, never as a fabricated 200.</p>
+      <p>Chrome may delay alarms under heavy system load or while the browser is sleeping; the interval is a target, not a real-time guarantee.</p>
+    </section>
+
+    <footer>Odesoftami · <a href="https://odesoftami.com/apk/" target="_blank" rel="noreferrer">Apps &amp; tools</a> · <a href="privacy.html">Privacy policy</a></footer>
+  </main>
+  <script src="lib/core.js"></script>
+  <script src="lib/screenshots.js"></script>
+  <script src="options.js"></script>
+</body>
+</html>

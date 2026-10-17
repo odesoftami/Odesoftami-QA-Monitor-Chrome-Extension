@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Odesoftami QA Monitor — Privacy Policy</title>
+  <link rel="stylesheet" href="options.css">
+</head>
+<body>
+  <main class="wrap">
+    <header>
+      <div class="logo" aria-hidden="true">↻</div>
+      <div>
+        <h1>Privacy Policy</h1>
+        <p>Odesoftami QA Monitor v3.2.0 · Denys Oleksiienko</p>
+      </div>
+    </header>
+
+    <section class="panel">
+      <h2>Summary</h2>
+      <p class="note-text">Odesoftami QA Monitor is a local-first browser QA and monitoring extension. It does not collect, transmit, sell or share browsing data, page contents, QA logs or screenshots. There is no telemetry, no analytics, no advertising and no remote code. All monitoring data stays in your browser profile until you delete it.</p>
+    </section>
+
+    <section class="panel">
+      <h2>What the extension stores locally</h2>
+      <ul class="permission-list">
+        <li><strong>Settings</strong> — bypass cache, badge visibility, default mode, stabilization period, history limit and screenshot preference.</li>
+        <li><strong>Session records</strong> — session ID, tab ID, mode, start/end times, stop reason, tested URL, expected URL and monitoring configuration.</li>
+        <li><strong>QA events</strong> — timestamps, check type, PASS/FAIL/WARN/UNKNOWN result, the URL, expected and actual short values, HTTP status when Chrome exposes it, load duration in milliseconds, reasons and bounded technical details.</li>
+        <li><strong>Text and DOM results</strong> — whether text or an element was found, and text lengths. The extension does not write full page contents to its event history. User-entered patterns, selectors and expected text are stored as configuration.</li>
+        <li><strong>Presets</strong> — names, descriptions and check configuration that you save.</li>
+        <li><strong>Floating-panel preferences</strong> — per-site panel position and collapsed state.</li>
+        <li><strong>Screenshots (opt-in only)</strong> — captured only when you enable “Screenshot on failure”, only for the active, focused tab, and stored locally in IndexedDB. They are never uploaded.</li>
+      </ul>
+      <p class="note-text">URLs can contain query parameters. Treat exported reports and screenshots as potentially sensitive and store them accordingly. Exports are created locally by you and are not sent anywhere by the extension.</p>
+    </section>
+
+    <section class="panel">
+      <h2>What the extension does not do</h2>
+      <ul class="permission-list">
+        <li>No network requests to Odesoftami or third parties.</li>
+        <li>No analytics, tracking, telemetry or advertising identifiers.</li>
+        <li>No collection of passwords, authentication tokens, cookies or form values.</li>
+        <li>No upload of screenshots, page text, browsing history or QA reports.</li>
+        <li>No remote executable code; all logic ships inside the extension package.</li>
+        <li>No inspection of Chrome internal pages, other extensions, cross-origin iframe content or closed shadow DOM.</li>
+      </ul>
+    </section>
+
+    <section class="panel">
+      <h2>Permissions and why they are needed</h2>
+      <ul class="permission-list">
+        <li><strong>storage</strong> — saves settings, sessions, events, presets and floating-panel preferences in <code>chrome.storage.local</code>; active runtime state uses <code>chrome.storage.session</code>.</li>
+        <li><strong>activeTab</strong> — identifies the tab you explicitly start monitoring and supports opt-in capture of the active tab.</li>
+        <li><strong>scripting</strong> — injects the monitoring content script into an already-open tab at session start.</li>
+        <li><strong>notifications</strong> — shows local desktop notifications for configured conditions and failures.</li>
+        <li><strong>alarms</strong> — provides a service-worker-safe fallback timer and badge refresh when Chrome throttles background tabs.</li>
+        <li><strong>webRequest</strong> — observe-only, main-frame-only access used while a monitored session is active to read the final HTTP status code, redirect target and network error. Requests are never blocked or changed; <code>webRequestBlocking</code> is not used.</li>
+        <li><strong>Host access to HTTP/HTTPS pages</strong> — runs the monitor on pages you choose and reads navigation data. It is not used to transmit data.</li>
+        <li><strong>Floating QA panel</strong> — UI-only, using the existing content script, storage and messaging. No additional permission is requested; panel position/collapsed state is local.</li>
+      </ul>
+    </section>
+
+    <section class="panel">
+      <h2>Retention and deletion</h2>
+      <p class="note-text">Event history is bounded per session (50–2,000 events; 500 by default, UI options 200/500/1,000/2,000), up to 30 sessions are retained, and screenshots are capped at 20 entries / 40 MB. Older records are pruned automatically. Clearing completed session history preserves active sessions, presets, settings and stored screenshots. Screenshots are removed only by the separate “Clear stored screenshots” action or individual deletion. You can delete individual sessions or presets in the dashboard. Removing the extension removes its extension storage and IndexedDB data according to Chrome's behavior.</p>
+    </section>
+
+    <section class="panel">
+      <h2>Chrome Web Store data disclosure</h2>
+      <p class="note-text">The extension does not collect or transmit user data. Local storage exists only to provide the monitoring, history, preset and report features on your device. Because no data leaves the device, there is no third-party sharing, no data sale and no use of data for advertising, creditworthiness or lending. The optional GitHub and Web footer links are normal external hyperlinks; no request is made unless the user clicks one.</p>
+    </section>
+
+    <section class="panel">
+      <h2>Contact</h2>
+      <p class="note-text">Publisher: Denys Oleksiienko (Odesoftami). Website: <a href="https://odesoftami.com/apk/" target="_blank" rel="noreferrer">odesoftami.com/apk</a>. For privacy questions, use the contact details published on the Odesoftami website.</p>
+      <p class="note-text">Effective date: 17 October 2026. Material changes will be reflected in the extension version and this page.</p>
+    </section>
+
+    <footer>Odesoftami · <a href="options.html">Settings</a> · <a href="dashboard.html">QA dashboard</a></footer>
+  </main>
+</body>
+</html>

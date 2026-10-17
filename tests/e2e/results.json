@@ -1,0 +1,198 @@
+{
+  "startedAt": "2026-10-17T20:30:16.570Z",
+  "finishedAt": "2026-10-17T20:31:24.448Z",
+  "chromium": "Chromium 153.0.7983.0 (headless=new)",
+  "extensionId": "chanabjanhmnmicngikpllhppgmigmmf",
+  "results": [
+    {
+      "name": "Extension loads as Manifest V3 and exposes 3.2.0 branding",
+      "status": "PASS",
+      "detail": "permissions: activeTab, alarms, notifications, scripting, storage, webRequest",
+      "durationMs": 2
+    },
+    {
+      "name": "Service worker responds and ships four built-in presets",
+      "status": "PASS",
+      "detail": "service worker ready",
+      "durationMs": 8
+    },
+    {
+      "name": "Detached popup window has fixed header/tabs/footer and starts/stops a monitor session",
+      "status": "PASS",
+      "detail": "detached window 400×600, fixed header/mode tabs/footer, new GitHub/Web footer links, larger gear, close button, clear next to export; started and stopped",
+      "durationMs": 7723
+    },
+    {
+      "name": "QA Session records checks without optional auto refresh",
+      "status": "PASS",
+      "detail": "text check recorded without reload; autoRefresh=false preserved",
+      "durationMs": 3072
+    },
+    {
+      "name": "Continuous refresh reloads, records HTTP 200, timing and badge countdown",
+      "status": "PASS",
+      "detail": "HTTP 200 and load timing recorded; badge \"2\"",
+      "durationMs": 2395
+    },
+    {
+      "name": "Refresh cycles enter pause and resume with a new active cycle",
+      "status": "PASS",
+      "detail": "phases: active → pause → active",
+      "durationMs": 6254
+    },
+    {
+      "name": "Text and DOM checks catch dynamically rendered content",
+      "status": "PASS",
+      "detail": "WARN → PASS for text and DOM; historical timing marked UNKNOWN",
+      "durationMs": 4416
+    },
+    {
+      "name": "Floating QA panel uses existing session data and supports collapse, drag, hide and stop",
+      "status": "PASS",
+      "detail": "counters matched, collapse/expand, drag persisted, hide kept monitoring, stop final summary, disabled panel, refresh exclusion and QA mode/load timing verified",
+      "durationMs": 14137
+    },
+    {
+      "name": "Text change condition (regex) detects a page-text change",
+      "status": "PASS",
+      "detail": "text change PASS recorded with regex matching",
+      "durationMs": 969
+    },
+    {
+      "name": "DOM element disappearance and expected-text mismatch are detected",
+      "status": "PASS",
+      "detail": "disappearance PASS and expected-text FAIL recorded",
+      "durationMs": 1965
+    },
+    {
+      "name": "Text disappears, DOM text changes and SPA URL changes are detected",
+      "status": "PASS",
+      "detail": "text disappearance, DOM text change and URL mismatch recorded",
+      "durationMs": 2799
+    },
+    {
+      "name": "Text absent fails and screenshot-on-failure is handled honestly",
+      "status": "PASS",
+      "detail": "screenshot_skipped — Either the '<all_urls>' or 'activeTab' permission is required.",
+      "durationMs": 976
+    },
+    {
+      "name": "Invalid selectors fail clearly and invalid regex is rejected before start",
+      "status": "PASS",
+      "detail": "invalid selector recorded; invalid regex rejected",
+      "durationMs": 564
+    },
+    {
+      "name": "HTTP 200/403/404/500, redirects and URL destination checks work",
+      "status": "PASS",
+      "detail": "403, 404, 500, redirect and recovery recorded",
+      "durationMs": 846
+    },
+    {
+      "name": "Network errors are recorded as FAIL with no fabricated HTTP status",
+      "status": "PASS",
+      "detail": "net::ERR_CONNECTION_REFUSED",
+      "durationMs": 1199
+    },
+    {
+      "name": "Collection stops after STOP_SESSION",
+      "status": "PASS",
+      "detail": "no events added after stop",
+      "durationMs": 2377
+    },
+    {
+      "name": "Stop-on-match and notifications preserve v2.3 behavior",
+      "status": "PASS",
+      "detail": "stopped with condition_met and notified",
+      "durationMs": 979
+    },
+    {
+      "name": "Legacy START_REFRESH message still works for v2.3 callers",
+      "status": "PASS",
+      "detail": "legacy message mapped to a v3 session",
+      "durationMs": 970
+    },
+    {
+      "name": "Closing the tab finalizes the session with tab_closed",
+      "status": "PASS",
+      "detail": "session for tab 1110142876 stopped cleanly",
+      "durationMs": 400
+    },
+    {
+      "name": "Service worker suspension/restart preserves the active session",
+      "status": "PASS",
+      "detail": "session state recovered after worker restart",
+      "durationMs": 482
+    },
+    {
+      "name": "Preset form saves a valid custom preset",
+      "status": "PASS",
+      "detail": "preset saved with id preset-fbcc1cbb-310c-4c3e-8627-0458a552ba86",
+      "durationMs": 716
+    },
+    {
+      "name": "Options page saves and restores monitoring defaults",
+      "status": "PASS",
+      "detail": "settleMs, screenshot default and floating-panel options persisted/restored",
+      "durationMs": 700
+    },
+    {
+      "name": "Local screenshot storage can be written, read and cleared without network",
+      "status": "PASS",
+      "detail": "IndexedDB put/list/get/delete verified",
+      "durationMs": 3
+    },
+    {
+      "name": "CSV, HTML and JSON reports are generated from real session data",
+      "status": "PASS",
+      "detail": "reports built for sess-mvcuq9dy-9ff6edfb",
+      "durationMs": 2067
+    },
+    {
+      "name": "Browser downloads CSV, HTML and JSON reports",
+      "status": "PASS",
+      "detail": "odesoftami-qa-2026-10-17-20-31-10-9ff6edfb.csv, odesoftami-qa-2026-10-17-20-31-10-9ff6edfb.html, odesoftami-qa-2026-10-17-20-31-10-9ff6edfb.json",
+      "durationMs": 1207
+    },
+    {
+      "name": "Dashboard and options remain usable at desktop and narrow widths",
+      "status": "PASS",
+      "detail": "dashboard 1280/390, options 760, privacy page",
+      "durationMs": 4414
+    },
+    {
+      "name": "Quick Clear history confirms, preserves active session/settings/presets/screenshots and updates UI",
+      "status": "PASS",
+      "detail": "cancel preserved; confirm removed 25 sessions / 175 events; active session, presets, settings and screenshots preserved",
+      "durationMs": 3712
+    },
+    {
+      "name": "No uncaught JavaScript exceptions in extension pages",
+      "status": "PASS",
+      "detail": "5 pages checked",
+      "durationMs": 0
+    }
+  ],
+  "artifacts": {
+    "screenshots": [
+      "store/popup-400.png",
+      "store/popup-qa.png",
+      "store/popup-active.png",
+      "store/popup-summary.png",
+      "store/floating-panel.png",
+      "store/dashboard-1280x800.png",
+      "store/dashboard-390.png",
+      "store/options-760.png"
+    ],
+    "downloads": [
+      "downloads/odesoftami-qa-2026-10-17-20-31-10-9ff6edfb.csv",
+      "downloads/odesoftami-qa-2026-10-17-20-31-10-9ff6edfb.html",
+      "downloads/odesoftami-qa-2026-10-17-20-31-10-9ff6edfb.json"
+    ]
+  },
+  "summary": {
+    "pass": 28,
+    "fail": 0,
+    "notTested": 0
+  }
+}

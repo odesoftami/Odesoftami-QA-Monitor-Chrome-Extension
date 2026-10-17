@@ -1,0 +1,14 @@
+{
+  "name": "odesoftami-qa-monitor",
+  "version": "3.2.0",
+  "private": true,
+  "description": "Odesoftami QA Monitor — Browser QA & Monitoring Tool, Chrome MV3 extension source and tests",
+  "scripts": {
+    "test": "node --test tests/unit/*.test.js",
+    "test:e2e": "node tests/e2e/run.js",
+    "check": "node --check service-worker.js && node --check refresh-content.js && node --check panel-content.js && node --check popup.js && node --check options.js && node --check dashboard.js && node --check lib/core.js && node --check lib/engine.js && node --check lib/screenshots.js"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Odesoftami QA Monitor</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="app">
+    <header class="app-header">
+      <div class="header-main">
+        <div class="logo" aria-hidden="true">↻</div>
+        <div class="brand">
+          <h1>Odesoftami QA Monitor</h1>
+          <p>Browser QA &amp; Monitoring Tool <span class="version-sep">·</span> <span id="headerVersion" class="header-version">v—</span></p>
+        </div>
+        <div class="header-controls">
+          <button id="settingsButton" class="icon-button settings-button" type="button" title="Settings" aria-label="Open settings">⚙</button>
+          <button id="closeButton" class="icon-button close-button" type="button" title="Close" aria-label="Close">×</button>
+        </div>
+      </div>
+
+      <nav class="mode-switch mode-switch-fixed" aria-label="Monitoring mode">
+        <button type="button" class="mode-button active" data-mode="refresh" aria-pressed="true">Refresh</button>
+        <button type="button" class="mode-button" data-mode="monitor" aria-pressed="false">Monitor</button>
+        <button type="button" class="mode-button" data-mode="qa" aria-pressed="false">QA Session</button>
+      </nav>
+    </header>
+
+    <div class="popup-content" id="popupContent">
+    <p id="modeHint" class="mode-hint">Timed reloads with the legacy text condition. No live DOM watchers.</p>
+    <div class="page-context">
+      <div id="pageTitle" class="page-title">Current tab</div>
+      <div id="pageUrl" class="page-url"></div>
+    </div>
+
+
+    <section id="presetCard" class="card compact-card">
+      <div class="card-heading">
+        <h2>Presets</h2>
+        <button id="managePresetsButton" class="link-button" type="button">Manage</button>
+      </div>
+      <div class="preset-row">
+        <select id="presetSelect" aria-label="Preset">
+          <option value="">Choose a preset…</option>
+        </select>
+        <button id="applyPresetButton" class="secondary small-button" type="button">Apply</button>
+      </div>
+      <div id="savePresetRow" class="save-preset-row hidden">
+        <input id="presetName" type="text" maxlength="60" placeholder="Preset name" aria-label="Preset name">
+        <button id="confirmSavePreset" class="secondary small-button" type="button">Save</button>
+        <button id="cancelSavePreset" class="secondary small-button" type="button">Cancel</button>
+      </div>
+      <button id="showSavePreset" class="link-button save-link" type="button">Save current settings as a preset</button>
+    </section>
+
+    <form id="configForm" autocomplete="off">
+      <section id="refreshSection" class="card">
+        <div class="card-heading">
+          <h2 id="refreshHeading">Refresh</h2>
+          <span class="card-note">2 s – 24 h</span>
+        </div>
+        <small id="qaRefreshNote" class="field-note hidden">Enable this only if you want to reload the page during your QA session.</small>
+        <label for="interval">Refresh interval</label>
+        <select id="interval">
+          <option value="2">2 seconds</option>
+          <option value="3">3 seconds</option>
+          <option value="5">5 seconds</option>
+          <option value="10" selected>10 seconds</option>
+          <option value="15">15 seconds</option>
+          <option value="30">30 seconds</option>
+          <option value="60">1 minute</option>
+          <option value="120">2 minutes</option>
+          <option value="300">5 minutes</option>
+          <option value="600">10 minutes</option>
+          <option value="900">15 minutes</option>
+          <option value="1800">30 minutes</option>
+          <option value="3600">1 hour</option>
+          <option value="custom">Custom…</option>
+        </select>
+        <div id="customRow" class="custom-row hidden">
+          <label for="customSeconds">Custom interval (seconds)</label>
+          <input id="customSeconds" type="number" min="2" max="86400" step="1" value="45">
+        </div>
+        <label for="cycleMode" class="spaced-label">Schedule</label>
+        <select id="cycleMode">
+          <option value="continuous">Continuous refresh</option>
+          <option value="cycles">Refresh cycles</option>
+        </select>
+        <div id="cycleSettings" class="cycle-settings hidden">
+          <label for="reloadsPerCycle">Reloads per cycle</label>
+          <input id="reloadsPerCycle" type="number" min="1" max="1000" step="1" value="5">
+          <label for="pauseSeconds" class="spaced-label">Pause between cycles (seconds)</label>
+          <input id="pauseSeconds" type="number" min="1" max="86400" step="1" value="10">
+          <small>Active countdown badge is red; pause countdown badge is green.</small>
+        </div>
+        <label id="autoRefreshRow" class="check-row hidden">
+          <input id="autoRefresh" type="checkbox" checked> Reload pages during this QA session
+        </label>
+        <small class="field-note">Chrome may throttle background tabs. Intervals are targets, not hard real-time guarantees.</small>
+      </section>
+
+      <section id="checksSection" class="card">
+        <div class="card-heading">
+          <h2 id="checksHeading">Text condition</h2>
+          <span id="checksBadge" class="card-note">legacy</span>
+        </div>
+
+        <details id="textDetails" class="check-block" open>
+          <summary><span id="textSummary">Text</span><span id="textState" class="mini-state">off</span></summary>
+          <div class="check-body">
+            <label id="textEnabledRow" class="check-row hidden">
+              <input id="textEnabled" type="checkbox"> Enable text check
+            </label>
+            <label for="textPattern">Text to look for</label>
+            <input id="textPattern" type="text" maxlength="300" placeholder="e.g. In Stock">
+            <div class="field-split">
+              <div>
+                <label for="textCondition">Condition</label>
+                <select id="textCondition">
+                  <option value="appears">Text appears</option>
+                  <option value="absent">Text is absent</option>
+                  <option value="disappears">Text disappears</option>
+                  <option value="changes">Text changes</option>
+                </select>
+              </div>
+              <label id="regexRow" class="check-row inline-check hidden">
+                <input id="textRegex" type="checkbox"> Regex
+              </label>
+            </div>
+            <label class="check-row"><input id="notifyOnMatch" type="checkbox" checked> Notify when condition matches</label>
+            <label class="check-row"><input id="stopOnMatch" type="checkbox" checked> Stop when condition matches</label>
+            <small id="textHelp">Case-insensitive visible-text search. “Text changes” compares the page text against the baseline captured after load.</small>
+          </div>
+        </details>
+
+        <details id="domDetails" class="check-block hidden">
+          <summary><span>DOM element</span><span id="domState" class="mini-state">off</span></summary>
+          <div class="check-body">
+            <label class="check-row"><input id="domEnabled" type="checkbox"> Enable DOM watcher</label>
+            <label for="domSelector">CSS selector</label>
+            <input id="domSelector" type="text" maxlength="300" placeholder="e.g. .status-message">
+            <label for="domCondition">Condition</label>
+            <select id="domCondition">
+              <option value="appears">Element appears</option>
+              <option value="disappears">Element disappears</option>
+              <option value="textChanges">Element text changes</option>
+            </select>
+            <label for="domExpectedText" class="spaced-label">Expected text <span class="optional">(optional)</span></label>
+            <input id="domExpectedText" type="text" maxlength="500" placeholder="Text that must appear inside the element">
+            <small>Invalid selectors are reported as a failed check, not as “element not found”.</small>
+          </div>
+        </details>
+
+        <details id="urlDetails" class="check-block hidden">
+          <summary><span>URL &amp; navigation</span><span id="urlState" class="mini-state">on</span></summary>
+          <div class="check-body">
+            <label class="check-row"><input id="urlEnabled" type="checkbox" checked> Check top-level URL</label>
+            <label for="expectedUrl">Expected URL <span class="optional">(optional)</span></label>
+            <input id="expectedUrl" type="url" maxlength="2048" placeholder="Defaults to the URL at session start">
+            <label class="check-row"><input id="ignoreHash" type="checkbox" checked> Ignore URL hash</label>
+            <label class="check-row"><input id="httpEnabled" type="checkbox" checked> Record HTTP status, redirects and navigation failures</label>
+            <label class="check-row"><input id="timingEnabled" type="checkbox" checked> Record page load timing</label>
+            <label for="loadBudget">Load budget in ms <span class="optional">(0 disables the warning)</span></label>
+            <input id="loadBudget" type="number" min="0" max="60000" step="100" value="5000">
+            <small>HTTP status is only reported when Chrome exposes it for a navigation observed during this session. Unknown is never shown as 200.</small>
+          </div>
+        </details>
+
+        <details id="optionsDetails" class="check-block hidden">
+          <summary><span>Session options</span><span id="optionsState" class="mini-state">defaults</span></summary>
+          <div class="check-body">
+            <label for="settleMs">Stabilization period (ms)</label>
+            <input id="settleMs" type="number" min="100" max="5000" step="100" value="800">
+            <label class="check-row"><input id="notifyOnFailure" type="checkbox" checked> Notify on failures</label>
+            <label class="check-row"><input id="stopOnFailure" type="checkbox"> Stop on the first failure</label>
+            <div id="screenshotRow">
+              <label class="check-row"><input id="screenshotOnFailure" type="checkbox"> Screenshot on failure (opt-in)</label>
+              <small class="field-note">Captures only the visible viewport of the active, focused tab. Saved locally in IndexedDB, never uploaded. Chrome may refuse capture for background or restricted tabs.</small>
+            </div>
+          </div>
+        </details>
+      </section>
+    </form>
+
+    <section class="card summary-card">
+      <div class="card-heading">
+        <div class="summary-title">
+          <h2 id="summaryHeading">Live summary</h2>
+          <span id="summaryType" class="summary-type hidden"></span>
+        </div>
+        <button id="dashboardButton" class="link-button" type="button">Dashboard</button>
+      </div>
+      <div class="stat-grid" id="statGrid">
+        <div class="stat"><span>Checks</span><strong id="statTotal">0</strong></div>
+        <div class="stat pass"><span>Pass</span><strong id="statPass">0</strong></div>
+        <div class="stat fail"><span>Fail</span><strong id="statFail">0</strong></div>
+        <div class="stat warn"><span>Warn</span><strong id="statWarn">0</strong></div>
+        <div class="stat unknown"><span>Unknown</span><strong id="statUnknown">0</strong></div>
+        <div class="stat"><span>Avg load</span><strong id="statLoad">—</strong></div>
+      </div>
+      <div class="summary-meta">
+        <span id="summaryDuration">Duration —</span>
+        <span id="summaryLastEvent">Last event —</span>
+      </div>
+      <div id="lastCheckLine" class="last-check hidden"></div>
+      <div class="card-actions">
+        <div class="summary-buttons">
+          <button id="exportCsvButton" class="secondary small-button" type="button">Export CSV</button>
+          <button id="clearHistoryButton" class="link-danger summary-clear" type="button" disabled>Clear history</button>
+        </div>
+        <span id="historyNote" class="history-note">No events recorded yet.</span>
+      </div>
+    </section>
+
+    </div>
+
+    <div class="app-footer">
+      <div id="error" class="error hidden" role="alert" aria-live="assertive"></div>
+      <div id="notice" class="notice hidden" role="status" aria-live="polite"></div>
+      <div class="actions">
+        <button id="startButton" class="primary" type="button">Start refreshing</button>
+        <button id="stopButton" class="secondary" type="button" disabled>Stop</button>
+      </div>
+      <div class="status-bar">
+        <div id="nextAction" class="next-action hidden"></div>
+        <div id="cycleProgress" class="cycle-progress hidden"></div>
+        <div id="status" class="status" role="status" aria-live="polite">
+          <span class="status-dot" aria-hidden="true"></span>
+          <span id="statusText">Not monitoring</span>
+          <span id="statusMode" class="mode-chip hidden">Refresh</span>
+        </div>
+      </div>
+      <footer class="copyright-footer" aria-label="Copyright, version and links">
+        <span>© 2026 Denys Oleksiienko</span>
+        <span class="footer-sep" aria-hidden="true">·</span>
+        <span id="footerVersion">v—</span>
+        <span class="footer-sep" aria-hidden="true">·</span>
+        <a id="githubLink" href="https://github.com/odesoftami" target="_blank" rel="noreferrer">GitHub ↗</a>
+        <span class="footer-sep" aria-hidden="true">·</span>
+        <a id="webLink" href="https://odesoftami.com/apk" target="_blank" rel="noreferrer">Web ↗</a>
+      </footer>
+    </div>
+  </div>
+  <script src="lib/core.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>

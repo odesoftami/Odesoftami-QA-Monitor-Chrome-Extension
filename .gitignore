@@ -1,0 +1,26 @@
+# Dependencies
+node_modules/
+
+# Local test/browser artifacts and temporary directories
+.tmp/
+.DS_Store
+*.log
+*.tmp
+*.crdownload
+downloads/
+*.dmp
+
+# Local secrets — never commit
+.env
+.env.*
+!.env.example
+
+# Editor/IDE local state
+.vscode/
+.idea/
+
+# Extracted/generated directories under dist are not source; release ZIPs and
+# checksums at dist/*.zip / dist/SHA256SUMS*.txt are intentionally tracked.
+dist/*/
+# The full-project transfer bundle is a delivery artifact, not a repo source.
+dist/*-full.zip
